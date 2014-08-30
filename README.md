@@ -9,7 +9,7 @@ Example:
 var withinLayers = L.withinLayers({
 		parent: $('#parent-where-I-want-to-show-list-of-items-in-shape'),
 		format: function(point) {
-			return point.Name + ' #' + point.Description;
+			return point.Name + ' ' + point.Description;
 		}
 	})
 	.addTo(map);
