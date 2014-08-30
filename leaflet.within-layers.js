@@ -76,13 +76,13 @@ L.Class.WithinLayers = L.Class.extend({
 				var contained = WithinLayer.getContained(function() {
 					var el = (this._path || this._icon),
 						prop = this.feature.properties,
-							li = $(options.listItem),
-							a = $('<a href="#"/>')
-								.html(format(prop, map))
-								.click(function() {
-									return false;
-								})
-								.appendTo(li);
+						li = $(options.listItem),
+						a = $('<a href="#"/>')
+							.html(format(prop, map))
+							.click(function() {
+								return false;
+							})
+							.appendTo(li);
 
 					if (el !== undefined) {
 						el.style.opacity = 0.5;
