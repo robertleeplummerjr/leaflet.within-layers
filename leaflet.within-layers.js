@@ -1,4 +1,4 @@
-L.Class.WithinLayers = L.Class.extend({
+;L.Class.WithinLayers = L.Class.extend({
 	layer: [],
 	options: {
 		list: '<ul/>',

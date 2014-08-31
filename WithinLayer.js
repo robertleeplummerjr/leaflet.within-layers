@@ -1,4 +1,4 @@
-var WithinLayer = (function() {
+;var WithinLayer = (function() {
 	//static methods & Properties
 	var list = [],
 		layers = [];
