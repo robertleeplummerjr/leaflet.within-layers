@@ -1,6 +1,6 @@
-;(function(){
+;L.Class.WithinLayers = (function(){
 	"use strict";
-	L.Class.WithinLayers = L.Class.extend({
+	 return L.Class.extend({
 		layer: [],
 		options: {
 			list: '<ul/>',
@@ -124,8 +124,8 @@
 			return this;
 		}
 	});
-
-	L.withinLayers = function (options) {
-		return new L.Class.WithinLayers(options);
-	};
 })();
+
+L.withinLayers = function (options) {
+	return new L.Class.WithinLayers(options);
+};
