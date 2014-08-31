@@ -1,4 +1,5 @@
 ;var WithinLayer = (function() {
+	"use strict";
 	//static methods & Properties
 	var list = [],
 		layers = [];
