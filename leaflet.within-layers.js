@@ -6,7 +6,11 @@
 			list: '<ul/>',
 			listItem: '<li/>',
 			parent: null,
-			format: null,
+			format: function(){
+				throw new Error('No format set!');
+			},
+			color: '#662d91',
+			errorColor: '#b00b00',
 			some: function() {},
 			none: function() {},
 			click: function() {},
@@ -31,20 +35,18 @@
 							title: 'Draw',
 							allowIntersection: false,
 							drawError: {
-								color: '#b00b00',
+								color: options.errorColor,
 								timeout: 1000
 							},
 							shapeOptions: {
-								color: '#bada55'
+								color: options.color
 							},
 							showArea: true
 						},
-						polyline: {
-							metric: false
-						},
+						polyline: false,
 						circle: {
 							shapeOptions: {
-								color: '#662d91'
+								color: options.color
 							}
 						}
 					},
@@ -60,11 +62,6 @@
 						layer = e.layer;
 
 					switch (type) {
-						case 'marker':
-							/*layer.bindPopup('A popup!');
-							markers.push(layer);
-							new WithinLayer(layer);*/
-							break;
 						case 'circle':
 						case 'rectangle':
 						case 'polygon':
@@ -83,9 +80,12 @@
 							prop = this.feature.properties,
 							li = $(options.listItem),
 							a = $('<a href="#"/>')
+								.attr('data-point', this)
 								.html(format(prop, map))
 								.click(options.click)
 								.appendTo(li);
+
+						a[0].dataPoint = this;
 
 						if (el !== undefined) {
 							el.style.opacity = 0.5;

@@ -17,6 +17,7 @@
 	<script src="bower_components/leaflet/dist/leaflet.js"></script>
 	<script src="bower_components/leaflet-ajax/dist/leaflet.ajax.js"></script>
 	<script src="bower_components/leaflet.draw/dist/leaflet.draw.js"></script>
+	<script src="bower_components/geolib/dist/geolib.js"></script>
 
 
 	<!--leaflet.within-layer files-->
@@ -29,6 +30,14 @@
 			padding: 0;
 			margin: 0;
 		}
+		#list {
+			position: absolute;
+			right: 0;
+			top: 0;
+			background-color: white;
+			max-height: 100%;
+			overflow: auto;
+		}
 	</style>
 	<script>
 		$(function() {
@@ -36,22 +45,41 @@
 					.css('margin', 0)
 					.height($(window).height());
 
-			var map = L.map('map').setView([32.151228,-31.0507283], 3);
+			var onEachFeature = function(feature, layer) {
+						withinLayers.addPoint(layer);
+					},
+
+					map = L.map('map')
+						.setView([32.151228,-31.0507283], 3),
+					//activate leaflet.within-layers
+					withinLayers = L.withinLayers({
+						parent: $('#list'),
+						format: function(properties) {
+							return properties.city;
+						},
+						click: function() {
+							$(this.dataPoint._icon).click();
+							alert('You clicked on ' + this.dataPoint.feature.properties.city);
+							return false;
+						}
+					}).addTo(map);
 
 			L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 				maxZoom: 18,
 				id: 'examples.map-20v6611k'
 			}).addTo(map);
 
-			L.geoJson.ajax('bower_components/geodata/cities.geojson').addTo(map);
+			L.geoJson.ajax('bower_components/geodata/cities.geojson', {
+				onEachFeature: onEachFeature
+			}).addTo(map);
 
-			//activate leaflet.within-layers
-			L.withinLayers({}).addTo(map);
+
 
 		});
 	</script>
 </head>
 <body>
 	<div id="map"></div>
+	<div id="list"></div>
 </body>
 </html>
