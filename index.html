@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="-1">
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<title>leaflet.within-layers</title>
+
+
+	<!--dependencies-->
+	<link rel="stylesheet" type="text/css" href="bower_components/leaflet/dist/leaflet.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/leaflet.draw/dist/leaflet.draw.css">
+
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/leaflet/dist/leaflet.js"></script>
+	<script src="bower_components/leaflet-ajax/dist/leaflet.ajax.js"></script>
+	<script src="bower_components/leaflet.draw/dist/leaflet.draw.js"></script>
+
+
+	<!--leaflet.within-layer files-->
+	<script src="WithinLayer.js"></script>
+	<script src="leaflet.within-layers.js"></script>
+
+
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+	</style>
+	<script>
+		$(function() {
+			$('#map')
+					.css('margin', 0)
+					.height($(window).height());
+
+			var map = L.map('map').setView([32.151228,-31.0507283], 3);
+
+			L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+				maxZoom: 18,
+				id: 'examples.map-20v6611k'
+			}).addTo(map);
+
+			L.geoJson.ajax('bower_components/geodata/cities.geojson').addTo(map);
+
+			//activate leaflet.within-layers
+			L.withinLayers({}).addTo(map);
+
+		});
+	</script>
+</head>
+<body>
+	<div id="map"></div>
+</body>
+</html>

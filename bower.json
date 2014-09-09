@@ -1,0 +1,31 @@
+{
+  "name": "leaflet.within-layers",
+  "main": "leaflet.within-layers.js",
+  "version": "1.0.0",
+  "homepage": "https://github.com/robertleeplummerjr/leaflet.within-layers",
+  "authors": [
+    "Robert Lee Plummer Jr <robertleeplummerjr@gmail.com>"
+  ],
+  "description": "Find points within layers",
+  "keywords": [
+    "points",
+    "search",
+    "layers",
+    "within"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "leaflet": "~0.7.3",
+    "jquery": "~2.1.1",
+    "leaflet.draw": "~0.2.3",
+    "geodata": "https://github.com/mahemoff/geodata.git",
+    "leaflet-ajax": "~1.1.0"
+  }
+}

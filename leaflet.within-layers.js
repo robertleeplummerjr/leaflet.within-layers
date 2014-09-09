@@ -8,20 +8,23 @@
 			parent: null,
 			format: null,
 			some: function() {},
-			none: function() {}
+			none: function() {},
+			click: function() {},
+			layerCreated: function() {}
 		},
 		initialize: function(options) {
+			this.drawControl = null;
+			this.drawnItems = null;
 			L.Util.setOptions(this, options);
 		},
 		addPoint: function(layer) {
 			this.layer.push(new WithinLayer(layer));
 		},
 		onAdd: function(map) {
-			var that = this,
-				options = this.options,
+			var options = this.options,
 				//setup draw items
-				drawnItems = new L.FeatureGroup(),
-				drawControl = new L.Control.Draw({
+				drawnItems = this.drawnItems = new L.FeatureGroup(),
+				drawControl = this.drawControl = new L.Control.Draw({
 					draw: {
 						position: 'topleft',
 						polygon: {
@@ -58,9 +61,9 @@
 
 					switch (type) {
 						case 'marker':
-							layer.bindPopup('A popup!');
+							/*layer.bindPopup('A popup!');
 							markers.push(layer);
-							new WithinLayer(layer);
+							new WithinLayer(layer);*/
 							break;
 						case 'circle':
 						case 'rectangle':
@@ -70,7 +73,7 @@
 					}
 					drawnItems.addLayer(layer);
 
-					drawControl._toolbars.edit._modes.edit.handler.enable();
+					options.layerCreated.call(this, layer);
 				},
 				displayContaining = function() {
 					list.children().remove();
@@ -81,9 +84,7 @@
 							li = $(options.listItem),
 							a = $('<a href="#"/>')
 								.html(format(prop, map))
-								.click(function() {
-									return false;
-								})
+								.click(options.click)
 								.appendTo(li);
 
 						if (el !== undefined) {
@@ -122,6 +123,9 @@
 		addTo: function (map) {
 			this.onAdd(map);
 			return this;
+		},
+		each: function(fn) {
+			WithinLayer.getContained(fn);
 		}
 	});
 })();
