@@ -42,27 +42,27 @@
 	<script>
 		$(function() {
 			$('#map')
-					.css('margin', 0)
-					.height($(window).height());
+				.css('margin', 0)
+				.height($(window).height());
 
 			var onEachFeature = function(feature, layer) {
-						withinLayers.addPoint(layer);
-					},
+					withinLayers.addPoint(layer);
+				},
 
-					map = L.map('map')
-						.setView([32.151228,-31.0507283], 3),
-					//activate leaflet.within-layers
-					withinLayers = L.withinLayers({
-						parent: $('#list'),
-						format: function(properties) {
-							return properties.city;
-						},
-						click: function() {
-							$(this.dataPoint._icon).click();
-							alert('You clicked on ' + this.dataPoint.feature.properties.city);
-							return false;
-						}
-					}).addTo(map);
+				map = L.map('map').setView([32.151228,-31.0507283], 3),
+
+				//activate leaflet.within-layers
+				withinLayers = L.withinLayers({
+					parent: $('#list'),
+					format: function(properties) {
+						return properties.city;
+					},
+					click: function() {
+						$(this.dataPoint._icon).click();
+						alert('You clicked on ' + this.dataPoint.feature.properties.city);
+						return false;
+					}
+				}).addTo(map);
 
 			L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 				maxZoom: 18,
@@ -72,9 +72,6 @@
 			L.geoJson.ajax('bower_components/geodata/cities.geojson', {
 				onEachFeature: onEachFeature
 			}).addTo(map);
-
-
-
 		});
 	</script>
 </head>
