@@ -18,6 +18,39 @@
 		layers.push(layer);
 	};
 
+	Constructor.isInside = function(parentLayer, childLayer) {
+		switch (parentLayer.layerType) {
+			//if it's a circle
+			case 'circle':
+				var circleInfoLatLng = parentLayer.getLatLng(),
+					radius = parentLayer.getRadius(),
+					ll = childLayer.getLatLng();
+
+				return (geolib.isPointInCircle(
+					{
+						latitude: circleInfoLatLng.lat,
+						longitude: circleInfoLatLng.lng
+					},
+					{
+						latitude: ll.lat,
+						longitude: ll.lng
+					},
+					radius
+				));
+
+
+			//if its any other shape
+			case 'rectangle':
+			case 'polygon':
+				var geo = L.geoJson(parentLayer.toGeoJSON());
+
+				return leafletPip.pointInLayer(list[j].getLatLng(), geo);
+
+		}
+
+		return false;
+	};
+
 	Constructor.getContained = function(fnIn, fnOut) {
 		var i,
 			max,
