@@ -19,12 +19,14 @@
 	};
 
 	Constructor.isInside = function(parentLayer, childLayer) {
+		var ll;
 		switch (parentLayer.layerType) {
 			//if it's a circle
 			case 'circle':
 				var circleInfoLatLng = parentLayer.getLatLng(),
-					radius = parentLayer.getRadius(),
-					ll = childLayer.getLatLng();
+					radius = parentLayer.getRadius();
+
+				ll = childLayer.getLatLng();
 
 				return (geolib.isPointInCircle(
 					{
@@ -40,15 +42,26 @@
 
 
 			//if its any other shape
-			case 'rectangle':
-			case 'polygon':
-				var geo = L.geoJson(parentLayer.toGeoJSON());
+			default:
+				var geoLls = [],
+					i = 0,
+					lls = parentLayer.getLatLngs();
 
-				return leafletPip.pointInLayer(list[j].getLatLng(), geo);
+				for (; i < lls.length; i++) {
+					ll = lls[i];
+					geoLls.push({
+						latitude: ll.lat,
+						longitude: ll.lng
+					});
+				}
+
+				ll = childLayer.getLatLng();
+				return geolib.isPointInside({
+					latitude: ll.lat,
+					longitude: ll.lng
+				}, geoLls);
 
 		}
-
-		return false;
 	};
 
 	Constructor.getContained = function(fnIn, fnOut) {
@@ -57,7 +70,9 @@
 			layer,
 			j = 0,
 			maxJ = list.length,
-			contained = [];
+			contained = [],
+			point,
+			ll;
 
 		for (i = 0, max = layers.length; i < max; i++) {
 			layer = layers[i];
@@ -70,13 +85,17 @@
 			switch (layer.layerType) {
 				case 'circle':
 					var circleInfoLatLng = layer.getLatLng(),
-						radius = layer.getRadius(),
-						ll;
+						radius = layer.getRadius();
 
 					for (j = 0; j < maxJ;j++) {
-						ll = list[j].getLatLng();
+						point = list[j];
 
-						if (geolib.isPointInCircle(
+						ll = point.getLatLng();
+
+						if (contained.indexOf(point) > -1) {
+							//it is already added
+						}
+						else if (geolib.isPointInCircle(
 							{
 								latitude: circleInfoLatLng.lat,
 								longitude: circleInfoLatLng.lng
@@ -87,30 +106,48 @@
 							},
 							radius
 						)) {
-							contained.push(list[j]);
+							contained.push(point);
 
                             if (fnIn) {
-                                fnIn.apply(list[j]);
+                                fnIn.apply(point);
                             }
 						} else if (fnOut) {
-                            fnOut.apply(list[j]);
+                            fnOut.apply(point);
                         }
 					}
 					break;
-				case 'rectangle':
-				case 'polygon':
-                    var geo = L.geoJson(layer.toGeoJSON()),
-                        inLayer;
+				default:
+					var geoLls = [],
+						i = 0,
+						lls = layer.getLatLngs();
+
+					for (; i < lls.length; i++) {
+						ll = lls[i];
+						geoLls.push({
+							latitude: ll.lat,
+							longitude: ll.lng
+						});
+					}
+
 					for (j = 0; j < maxJ;j++) {
-                        inLayer = leafletPip.pointInLayer(list[j].getLatLng(), geo)
-						if (inLayer.length > 0) {
-							contained.push(list[j]);
+						point = list[j];
+
+						ll = point.getLatLng();
+
+						if (contained.indexOf(point) > -1) {
+							//it is already added
+						}
+						else if (geolib.isPointInside({
+							latitude: ll.lat,
+							longitude: ll.lng
+						}, geoLls)) {
+							contained.push(point);
 
                             if (fnIn) {
-                                fnIn.apply(list[j]);
+                                fnIn.apply(point);
                             }
 						} else if (fnOut) {
-                            fnOut.apply(list[j]);
+                            fnOut.apply(point);
                         }
 					}
 
