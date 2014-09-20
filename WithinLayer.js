@@ -118,11 +118,11 @@
 					break;
 				default:
 					var geoLls = [],
-						i = 0,
+						k = 0,
 						lls = layer.getLatLngs();
 
-					for (; i < lls.length; i++) {
-						ll = lls[i];
+					for (; k < lls.length; k++) {
+						ll = lls[k];
 						geoLls.push({
 							latitude: ll.lat,
 							longitude: ll.lng
