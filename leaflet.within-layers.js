@@ -56,62 +56,65 @@
 				}),
 				parent = $(options.parent),
 				list = $(options.list).appendTo(parent),
-				format = options.format,
-				createLayer = function (e) {
-					var type = e.layerType,
-						layer = e.layer;
+				format = options.format;
 
-					switch (type) {
-						case 'circle':
-						case 'rectangle':
-						case 'polygon':
-							WithinLayer.addLayer(layer, type);
-							break;
+			function createLayer(e) {
+				var type = e.layerType,
+					layer = e.layer;
+
+				switch (type) {
+					case 'circle':
+					case 'rectangle':
+					case 'polygon':
+						WithinLayer.addLayer(layer, type);
+						break;
+				}
+				drawnItems.addLayer(layer);
+
+				options.layerCreated.call(this, layer);
+
+				displayContaining();
+			}
+
+			function displayContaining() {
+				list.children().remove();
+
+				var contained = WithinLayer.getContained(function() {
+					var el = (this._path || this._icon),
+						prop = this.feature.properties,
+						li = $(options.listItem),
+						a = $('<a href="#"/>')
+							.attr('data-point', this)
+							.html(format(prop, map))
+							.click(options.click)
+							.appendTo(li);
+
+					a[0].dataPoint = this;
+
+					if (el !== undefined && el !== null) {
+						el.style.opacity = 0.5;
 					}
-					drawnItems.addLayer(layer);
 
-					options.layerCreated.call(this, layer);
-				},
-				displayContaining = function() {
-					list.children().remove();
+					a[0].layer = li[0].layer = this;
 
-					var contained = WithinLayer.getContained(function() {
-						var el = (this._path || this._icon),
-							prop = this.feature.properties,
-							li = $(options.listItem),
-							a = $('<a href="#"/>')
-								.attr('data-point', this)
-								.html(format(prop, map))
-								.click(options.click)
-								.appendTo(li);
+					list.append(li);
+				}, function() {
+					var el = (this._path || this._icon);
+					if (el === undefined || el === null) return;
 
-						a[0].dataPoint = this;
+					el.style.opacity = 1;
+				});
 
-						if (el !== undefined) {
-							el.style.opacity = 0.5;
-						}
-
-						a[0].layer = li[0].layer = this;
-
-						list.append(li);
-					}, function() {
-						var el = (this._path || this._icon);
-						if (el !== undefined) {
-							el.style.opacity = 1;
-						}
-					});
-
-					if (contained.length > 0) {
-						options.some(parent, this);
-					} else {
-						options.none(parent, this);
-					}
-				};
+				if (contained.length > 0) {
+					options.some(parent, this);
+				} else {
+					options.none(parent, this);
+				}
+			}
 
 			//handle the draw events for detecting if something is inside a circle
 			map.on('draw:created', createLayer);
 			map.on('draw:edited', displayContaining);
-			map.on('layerremove', displayContaining);
 			map.on('draw:revert', displayContaining);
 			map.on('draw:move', displayContaining);
 			map.on('draw:deleted', displayContaining);
